@@ -848,8 +848,19 @@ window.addEventListener('scroll', () => {
 });
 
 // ── INIT ─────────────────────────────────────────────
+// 1. هنا نتحقق من الكاش المحلي أولاً لكي لا تفتح الصفحة فارغة أثناء التحميل
+const localData = localStorage.getItem('tng_products');
+if (localData) {
+  try {
+    products = JSON.parse(localData);
+  } catch(e) { /* إذا حدث خطأ نعتمد على المصفوفة الافتراضية */ }
+}
 renderProducts();
-loadProductsFromSheets(); // جلب من Sheets في الخلفية وتحديث العرض
+
+// 2. جلب المنتجات الحية مباشرة من الـ Sheets وتحديث العرض للزوار فوراً
+if (typeof loadProductsFromSheets === 'function') {
+  loadProductsFromSheets();
+}
 
 window.addEventListener('load', () => {
   document.getElementById('lbar').classList.add('go');
